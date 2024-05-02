@@ -5,14 +5,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 exec(open('pyvis/_version.py').read())
 setup(
-    name="pyvis",
+    name="better-pyvis",
     version=__version__,
     description="A Python network graph visualization library",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url="https://github.com/WestHealth/pyvis",
+    url="https://github.com/matriculus/pyvis",
     author="Jose Unpingco",
-    author_email="datascience@westhealth.org",
+    author_email="vishnulex@outlook.com",
     license="BSD",
     packages=find_packages(),
     include_package_data=True,
