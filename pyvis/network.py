@@ -125,7 +125,7 @@ class Network(object):
             self.__class__, self.num_nodes(), self.num_edges()
         )
 
-    def add_node(self, n_id, label=None, shape="dot", color='#97c2fc', **options):
+    def add_node(self, node, label=None, shape="dot", color='#97c2fc', **options):
         """
         This method adds a node to the network, given a mandatory node ID.
         Node labels default to node ids if no label is specified during the
@@ -135,9 +135,7 @@ class Network(object):
         >>> nt.add_node(0, label="Node 0")
         >>> nt.add_node(1, label="Node 1", color = "blue")
 
-        :param n_id: The id of the node. The id is mandatory for nodes and
-                     they have to be unique. This should obviously be set per
-                     node, not globally.
+        :param node: The node object. It is mandatory.
 
         :param label: The label is the piece of text shown in or under the
                       node, depending on the shape.
@@ -214,7 +212,6 @@ class Network(object):
                   one. To lock the node to that position use the physics or
                   fixed options.
 
-        :type n_id: str or int
         :type label: str or int
         :type borderWidth: num (optional)
         :type borderWidthSelected: num (optional)
@@ -233,16 +230,18 @@ class Network(object):
         :type x: num (optional)
         :type y: num (optional)
         """
-        assert isinstance(n_id, str) or isinstance(n_id, int)
+        # assert isinstance(n_id, str) or isinstance(n_id, int)
+        options["object"] = node
+        n_id = node.__str__()
         if label:
             node_label = label
         else:
-            node_label = n_id
+            node_label = node.__str__()
         if n_id not in self.node_ids:
             if "group" in options:
                 n = Node(n_id, shape, label=node_label, font_color=self.font_color, **options)
             else:
-                n = Node(n_id, shape, label=node_label, color=color, font_color=self.font_color, **options)
+                n = Node(n_id.__str__(), shape, label=node_label, color=color, font_color=self.font_color, **options)
             self.nodes.append(n.options)
             self.node_ids.append(n_id)
             self.node_map[n_id] = n.options
@@ -287,16 +286,6 @@ class Network(object):
                        k, len(v), len(nodes)
                    )
                 nd[nodes[i]].update({k: v[i]})
-
-        for node in nodes:
-            # check if node is `number-like`
-            try:
-                node = int(node)
-                self.add_node(node, **nd[node])
-            except:
-                # or node could be string
-                assert isinstance(node, str)
-                self.add_node(node, **nd[node])
 
     def num_nodes(self):
         """
@@ -652,8 +641,6 @@ class Network(object):
 
         :returns: set
         """
-        assert (isinstance(node, str) or isinstance(node, int)
-                ), "error: expected int or str for node but got %s" % type(node)
         assert (node in self.node_ids), "error: %s node not in network" % node
         return self.get_adj_list()[node]
 
